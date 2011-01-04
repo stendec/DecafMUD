@@ -1,0 +1,194 @@
+.decafmud.interface {
+	background: #000;
+	border-color: #333;
+}
+
+.decafmud .mud-pane:focus {
+	outline-color: #222; }
+
+/* Scroll Helpers */
+@-webkit-keyframes attention-pulse {
+	from {
+		background-color: rgba(24,24,24,0.75);
+	}
+	to {
+		background-color: rgba(92,47,1,0.75);
+	}
+}
+
+@-webkit-keyframes connecting-pulse {
+	from { background-color: #7D0101; }
+	to { background-color: #7D7D01; }
+}
+
+.decafmud .scroll-point {
+	border-color: #444; }
+.decafmud .scroll-button {
+	-webkit-animation-name: attention-pulse;
+	-webkit-animation-duration: 1s;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-direction: alternate;
+	-webkit-animation-timing-function: ease-in-out;
+}
+.decafmud .scroll-button:hover, .decafmud .scroll-button:focus {
+	-webkit-animation-name: none; }
+
+/* Windows */
+.decafmud.window {
+	border-color: #333;
+	border-color: rgba(56,56,56,0.9);
+	background-color: #121212;
+	background-color: rgba(20,20,20,0.9);
+}
+	
+/* Splash Screen */
+.decafmud.splash {
+	background: #000;
+	background-color: rgba(0,0,0,0.9);
+}
+
+.decafmud.splash .heading, .decafmud.splash .status {
+	background: #121212;
+	background-color: rgba(20,20,20,0.9);
+	color: #CCC;
+}
+.decafmud.splash .version { color: #333; }
+.decafmud.splash .progress { background: #020202; }
+.decafmud.splash .inner-progress { background: #222; }
+.decafmud.splash .old {
+	background: #020202;
+	background-color: rgba(2,2,2,0.9);
+	color: #555;
+}
+
+.decafmud.note {
+	background: #121212;
+	background-color: rgba(20,20,20,0.9);
+	border-color: #333;
+	border-color: rgba(56,56,56,0.9);
+}
+
+.decafmud .scroll-button,.decafmud.fs {
+	background: #121212;
+	background-color: rgba(24,24,24,0.75);
+}
+
+.decafmud .scroll-button:hover, .decafmud .scroll-button:focus, .decafmud.fs:hover, .decafmud.fs:focus {
+	background: #333333;
+	background-color: rgba(68,68,68,0.75);
+}
+
+.decafmud .input {
+	background: transparent;
+	color: #FFF;
+	border-color: #111;
+}
+
+.decafmud .input-cont {
+	border-color: #333;
+}
+
+.decafmud .input.blur { color: #aaa; }
+
+.decafmud .status-icon.connectivity {
+	border-radius: 8px;
+	-moz-border-radius: 8px; }
+	
+.decafmud .status-icon.connectivity.connected {
+	background-color: #017D01; }
+	
+.decafmud .status-icon.connectivity.disconnected {
+	background-color: #7D0101; }
+.decafmud .status-icon.connectivity.connecting {
+	background-color: #7D7D01; 
+
+	-webkit-animation-name: connecting-pulse;
+	-webkit-animation-duration: 1s;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-direction: alternate;
+	-webkit-animation-timing-function: ease-in-out;
+}
+
+/* Toolbar */
+.decafmud.toolbar {
+	background-color: #333;
+	background-color: rgba(56,56,56,0.95);
+	border-color: #666;
+	border-color: rgba(113,113,113,0.9);
+}
+
+.decafmud.toolbar .button.toggle {
+	border-color: #666;
+	border-color: rgba(113,113,113,0.9); }
+
+.decafmud.toolbar .button.toggle-pressed {
+	background-color: #000;
+	background-color: rgba(0,0,0,0.9); }
+
+.decafmud.toolbar .button.disabled,.decafmud.toolbar .button.disabled:hover,.decafmud.toolbar .button.disabled:focus {
+	background-color: #121212;
+	background-color: rgba(20,20,20,0.9); }
+	
+/* Info Bars */
+.decafmud.infobar {
+	background: url(../images/decaf-icon.png) 5px 17px no-repeat;
+	background-color: #191919;
+	background-color: rgba(26,26,26,0.95); 
+	border-color: #666;
+	border-color: rgba(113,113,113,0.9);
+}
+.decafmud.infobar .close:hover, .decafmud.infobar .close:focus {
+	background-color: #000;
+}
+.decafmud.infobar.clickable:hover,.decafmud.infobar.clickable:focus {
+	border-color: #888;
+	border-color: rgba(151,151,151,0.9);
+}
+.decafmud.toolbar .button,.decafmud.infobar .button {
+	color: #FFF;
+	background-color: #121212;
+	background-color: rgba(20,20,20,0.9);
+	border-color: #666;
+	border-color: rgba(113,113,113,0.9); }
+.decafmud.toolbar .button {
+	color: rgba(0,0,0,0); }
+.decafmud.toolbar .button:hover,.decafmud.toolbar .button:focus,.decafmud.infobar .button:hover,.decafmud.infobar .button:focus {
+	background-color: #666;
+	background-color: rgba(113,113,113,0.9); }
+
+.decafmud.toolbar.always-on .button, .decafmud.toolbar.visible .button, .decafmud.toolbar:hover .button, .decafmud.toolbar:focus .button {
+	color: #FFF; }
+
+/* Fancy Custom Scrollbar! */
+.decafmud.interface {
+	scrollbar-base-color: #0D0D0D;
+	scrollbar-arrow-color: #7F7F7F;
+	scrollbar-3dlight-color: #444444;
+	scrollbar-darkshadow-color: #0f0f0f;
+	scrollbar-face-color: #232323;
+	scrollbar-highlight-color: #2f2f2f;
+	scrollbar-shadow-color: #181818;
+	scrollbar-track-color: #000;
+}
+
+.decafmud.interface ::-webkit-scrollbar {
+	width: 15px;
+	border-radius: 7.5px;
+	-webkit-border-radius: 7.5px;
+}
+
+.decafmud.interface ::-webkit-scrollbar-thumb {
+	border-radius: 7.5px;
+	border-left: 1px solid rgba(75,75,75,0.9);
+	opacity: 0.9;
+	background: rgba(13,13,13,0.9) -webkit-gradient(linear, 0% 0%, 100% 0%, from(rgba(57,57,57,0.9)), to(rgba(13,13,13,0.9))); }
+
+.decafmud.interface ::-webkit-scrollbar-thumb:hover,.decafmud.interface ::-webkit-scrollbar-thumb:focus {
+	background: #181818 -webkit-gradient(linear, 0% 0%, 100% 0%, from(rgb(63,63,63)), to(rgb(24,24,24)));
+}
+
+.decafmud.interface ::-webkit-scrollbar-thumb:active {
+	background: #3F3F3F -webkit-gradient(linear, 0% 0%, 100% 0%, from(rgb(24,24,24)), to(rgb(63,63,63)));
+	border-left: none;
+	border-right: 1px solid #444;
+}

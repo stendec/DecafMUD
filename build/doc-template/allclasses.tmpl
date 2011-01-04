@@ -1,0 +1,53 @@
+<div align="center">{+new Link().toFile("index.html").withText("Class Index")+} | {+new Link().toFile("files.html").withText("File Index")+}</div>
+
+<h2 class="heading1">Classes</h2>
+
+<ul class="classList">
+	{!
+		var last = ['cantpossiblystartwiththis'];
+		var ld = -1;
+		for(var ci in data) {
+		var thisClass = data[ci];
+		
+		var parts = thisClass.alias.split('.');
+		var old_parts = [], i=0;
+		for(var i=0; i < parts.length && i < last.length; i++) {
+			if ( parts[i] === last[i] ) {
+				old_parts.push(parts[i]);
+			}
+		}
+		
+		var pref = function() {
+			return new Array(old_parts.length+1).join('&nbsp;&nbsp;&nbsp;&nbsp;');
+		};
+		
+		var nw = parts.slice(old_parts.length);
+		while(nw.length > 1) {
+			var nolink = nw.shift();
+			output += '<li class="nolink">' + pref() + '.' + nolink + '</li>';
+			old_parts.push(nolink);
+		}
+		
+		last = parts; ld = old_parts.length;
+		var name = (old_parts.length > 0 ? '.' : '') + nw[0];
+		pref = new Array(old_parts.length+1).join('&nbsp;&nbsp;&nbsp;&nbsp;');
+		
+		output += '<li class="';
+		
+		if (thisClass.isNamespace) {
+			output += thisClass.is('FUNCTION') ? "function" : "namespace";
+		} else {
+			output += "class";
+		}
+		
+		output += thisClass.isBuiltin() ? " builtin" : "";
+		
+		output += '">' + pref;
+		
+		var link = new Link().toClass(thisClass.alias);
+		output += link.toString().replace(/(<a[^>]+>)[^<]*<\/a>/, "$1" + name+"</a>");
+		output += "</li>";
+		
+		}
+	!}
+</ul>
