@@ -3,7 +3,6 @@
  * http://decafmud.kicks-ass.net
  *
  * Copyright 2010, Stendec <stendec365@gmail.com>
- * Licensed under the MIT license.
  */
 
  /**

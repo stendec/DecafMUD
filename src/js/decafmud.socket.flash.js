@@ -12,7 +12,6 @@
  * requires a policy daemon to be running on the remote server.
  *
  * Copyright 2010, Stendec <stendec365@gmail.com>
- * Licensed under the MIT license.
  */
 
 (function(DecafMUD) {

@@ -1,3 +1,16 @@
+/*!
+ * DecafMUD v0.9.0
+ * http://decafmud.kicks-ass.net
+ *
+ * Copyright 2010, Stendec <stendec365@gmail.com>
+ */
+
+/**
+ * @fileOverview DecafMUD Theme: Dark
+ * @author Stendec <stendec365@gmail.com>
+ * @version 0.9.0
+ */
+
 .decafmud.interface {
 	background: #000;
 	border-color: #333;
