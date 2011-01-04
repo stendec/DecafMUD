@@ -126,6 +126,7 @@ var SimpleInterface = function(decaf) {
 	this.el_display = document.createElement('div');
 	this.el_display.className = 'decafmud mud-pane primary-pane';
 	this.el_display.setAttribute('role', 'log');
+	this.el_display.setAttribute('aria-live', 'assertive');
 	this.el_display.setAttribute('tabIndex','0');
 	this.container.appendChild(this.el_display);
 	
@@ -475,14 +476,26 @@ SimpleInterface.prototype.setup = function() {
 		function(e){ this.click_fsbutton(e); }
 	);
 	
-	// Create a settings button.
-	this.stbutton = this.tbNew(
-		"Settings".tr(this.decaf),
+	// Create the log button.
+	this.logbutton = this.tbNew(
+		"Logs".tr(this.decaf),
 		undefined,
-		"Click to change DecafMUD's settings.".tr(this.decaf),
-		1, true, false, undefined,
-		function(e){ this.showSettings(); }
+		"Click to open a window containing this session's logs.".tr(this.decaf),
+		0,
+		true,
+		false,
+		undefined,
+		function(e){ this.showLogs(); }
 	);
+	
+	// Create a settings button.
+	//this.stbutton = this.tbNew(
+	//	"Settings".tr(this.decaf),
+	//	undefined,
+	//	"Click to change DecafMUD's settings.".tr(this.decaf),
+	//	1, true, false, undefined,
+	//	function(e){ this.showSettings(); }
+	//);
 	
 	// Create the connected notification icon.
 	this.ico_connected = this.addIcon("You are currently disconnected.".tr(this.decaf), '', 'connectivity disconnected');
@@ -495,6 +508,52 @@ SimpleInterface.prototype.setup = function() {
 		if ( ! this._resizeToolbar() ) {
 			this.resizeScreen(false); }
 	}
+}
+
+/** Quick and dirty function for saving logs. */
+SimpleInterface.prototype.showLogs = function() {
+	//var wd = win.document;
+	
+	// Build some CSS.
+	var css = '', css2 = '';
+	if ( window.getComputedStyle ) {
+		var node = this.display.display, count=0;
+		while(node) {
+			count += 1;
+			if(count>15){alert('Too high count!');return;}
+			var style = getComputedStyle(node,null);
+			if (!style.backgroundColor ||
+				style.backgroundColor === 'transparent' ||
+				style.backgroundColor.substr(0,5) === 'rgba(') {
+				if(node === document.body) { break; }
+				node = node.parentNode;
+			} else {
+				css = 'background-color:' + style.backgroundColor + ';';
+				break;
+			}
+		}
+		if(!css) { css = 'background-color:#000;'; }
+		var style = getComputedStyle(this.display.display,null);
+		css = 'body{'+css+'color:'+style.color+';}';
+		
+		css2 = 'div{font-family:'+style.fontFamily+';font-size:'+style.fontSize+';}';
+	} else {
+		css = 'body{background:#000;color:#C0C0C0;}';
+		css2= 'div{font-family:monospace;}';
+	}
+	
+	var url = 'data:text/html,';
+	
+	url += '&lt;html>&lt;head>&lt;title>';
+	url += 'DecafMUD Session Log'.tr(this.decaf);
+	url += '&lt;/title>&lt;style>'+css+css2+'&lt;/style>&lt;/head>&lt;body>';
+	url += '&lt;h1>';
+	url += 'DecafMUD Session Log'.tr(this.decaf);
+	url += '&lt;/h2>';
+	url += '&lt;div>' + this.display.display.innerHTML + '&lt;/div>';
+	url += '&lt;/body>&lt;/html>';
+	
+	var win = window.open(url,'log-window','width=700,height=400,directories=no,location=no,menubar=no,status=no,toolbar=no,scrollbars=yes');
 }
 
 ///////////////////////////////////////////////////////////////////////////////
