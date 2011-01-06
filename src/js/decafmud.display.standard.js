@@ -101,6 +101,7 @@ Display.prototype.readyClear = false;
 Display.prototype.endSpace = false;
 Display.prototype.scrollTime = null;
 Display.prototype.willScroll = false;
+Display.prototype.vt100Warning = false;
 Display.prototype.mxp = false;
 
 // Clear the display.
@@ -430,7 +431,15 @@ Display.prototype.handleAnsiCSI = function(seq) {
 			return;
 	}
 	
-	this.decaf.debugString('Unhandled ANSI Sequence: ESC [' + seq);
+	if ( 'ABCDEFGHJKSTfnsulh'.indexOf(seq.charAt(seq.length-1)) !== -1 ) {
+		if (! this.vt100Warning ) {
+			this.decaf.debugString("Notice: This display handler only provides"+
+				" a subset of VT100, and doesn't handle cursor movement commands.");
+			this.vt100Warning = true;
+		}
+	} else {
+		this.decaf.debugString('Unhandled ANSI Sequence: ESC [' + seq);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
