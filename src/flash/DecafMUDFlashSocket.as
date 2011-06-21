@@ -67,7 +67,6 @@ package {
 			rawsocket = new Socket  ;
 
 			// Add event listeners to the socket
-			rawsocket.addEventListener("close",onClose);
 			rawsocket.addEventListener("connect",onConnect);
 			rawsocket.addEventListener("ioError",onError);
 			rawsocket.addEventListener("securityError",onSecurityError);
@@ -309,12 +308,13 @@ package {
 				tlsconfig.trustAllCertificates = true;
 				tlsconfig.ignoreCommonNameMismatch = true;
 				tlssocket = new TLSSocket();
-				tlssocket.addEventListener("socketData",onSocketData);
                                 socket = tlssocket;
 			} else {
-				rawsocket.addEventListener("socketData",onSocketData);
 				socket = rawsocket;
 			}
+			socket.addEventListener("socketData",onSocketData);
+			socket.addEventListener("close",onClose);
+
 			rawsocket.connect(wshost,wsport);
 		}
 
