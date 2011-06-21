@@ -38,6 +38,7 @@ FlashSocket.sockets = {};
 // State Variables
 FlashSocket.prototype.host = undefined;
 FlashSocket.prototype.port = undefined;
+FlashSocket.prototype.ssl = undefined;
 FlashSocket.prototype.connected = false;
 FlashSocket.prototype.socket = null;
 FlashSocket.prototype.ready = false;
@@ -140,8 +141,8 @@ FlashSocket.prototype.connect = function() {
 	if ( this.decaf.options.set_socket.policyport !== 843 && this.decaf.options.set_socket.policyport !== undefined ) {
 		this.socket.setPolicyPort(this.decaf.options.set_socket.policyport); }
 	
-	// Get the hostname and port
-	var host = this.host, port = this.port;
+	// Get the hostname, port and ssl options
+	var host = this.host, port = this.port, ssl = this.ssl;
 	if ( host === undefined ) {
 		host = this.decaf.options.host;
 		if ( ! host ) { host = document.location.host; }
@@ -150,9 +151,15 @@ FlashSocket.prototype.connect = function() {
 	if ( port === undefined ) {
 		port = this.decaf.options.port;
 		this.port = port; }
+	if ( ssl === undefined ) {
+		ssl = this.decaf.options.set_socket.ssl;
+		if ( ssl === undefined) {
+			ssl = false; }
+		this.ssl = ssl;
+	}
 	
 	// Attempt to connect.
-	this.socket.connect(host, port);
+	this.socket.connect(host, port, ssl);
 }
 
 // Close the current connection.
