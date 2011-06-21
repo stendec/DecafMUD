@@ -47,6 +47,7 @@ DecafWebSocket.sockets = {};
 // State Variables
 DecafWebSocket.prototype.host = undefined;
 DecafWebSocket.prototype.port = undefined;
+DecafWebSocket.prototype.ssl = undefined;
 DecafWebSocket.prototype.connected = false;
 DecafWebSocket.prototype.ready = false;
 
@@ -108,9 +109,18 @@ DecafWebSocket.prototype.connect = function() {
 		
 		this.host = host;
 	}
+
+	// Get SSL setting
+	var ssl = this.ssl;
+	if ( ssl === undefined ) {
+		ssl = this.decaf.options.set_socket.ssl;
+		if ( ssl === undefined) {
+			ssl = false; }
+		this.ssl = ssl;
+	}
 	
 	// Create the websocket and attach our events.
-	var con = 'ws://' + host + ':' + port + '/' + path;
+	var con = 'ws' + (ssl ? 's' : '') + '://' + host + ':' + port + '/' + path;
 	this.decaf.debugString('WebSocket Connection String: ' + con);
 	
 	this.websocket = new WebSocket(con);
