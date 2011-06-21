@@ -21,12 +21,21 @@ package {
 	import flash.net.Socket;
 	import flash.system.Security;
 	import flash.utils.ByteArray;
+	import com.hurlant.crypto.tls.TLSConfig;
+	import com.hurlant.crypto.tls.TLSEngine;
+	import com.hurlant.crypto.tls.TLSSecurityParameters;
+	import com.hurlant.crypto.tls.TLSSocket;
 
 	public class DecafMUDFlashSocket extends Sprite {
 		protected var socket:Socket;
+		protected var rawsocket:Socket;
+		protected var tlsconfig:TLSConfig;
+		protected var tlssocket:TLSSocket;
 		protected var id:String;
 		protected var pport:int;
 		protected var callback:String;
+		protected var ssl:Boolean;
+		protected var host:String;
 		
 		// Slash Reg
 		protected var bsreg:RegExp = new RegExp("\\\\","g");
@@ -55,14 +64,13 @@ package {
 			callback = "DecafMUDFlashSocket.flashCallback";
 
 			// Create the socket.
-			socket = new Socket  ;
+			rawsocket = new Socket  ;
 
 			// Add event listeners to the socket
-			socket.addEventListener("close",onClose);
-			socket.addEventListener("connect",onConnect);
-			socket.addEventListener("ioError",onError);
-			socket.addEventListener("securityError",onSecurityError);
-			socket.addEventListener("socketData",onSocketData);
+			rawsocket.addEventListener("close",onClose);
+			rawsocket.addEventListener("connect",onConnect);
+			rawsocket.addEventListener("ioError",onError);
+			rawsocket.addEventListener("securityError",onSecurityError);
 
 			// Set the default pport
 			pport = 843;
@@ -100,6 +108,9 @@ package {
 		}
 
 		protected function onConnect(event:Event):void {
+			if(ssl) {
+				tlssocket.startTLS(rawsocket, host, tlsconfig);
+			}
 			flash.external.ExternalInterface.call(callback,id,1);
 		}
 
@@ -282,14 +293,29 @@ package {
 			allow_compress = allow;
 		}
 
-		public function connect(host:String,port:int):void {
+		public function connect(wshost:String,wsport:int,use_ssl:Boolean):void {
 			// First, load the policy file.
 			if (pport!=843) {
-				Security.loadPolicyFile("xmlsocket://"+host+":"+pport);
+				Security.loadPolicyFile("xmlsocket://"+wshost+":"+pport);
 			}
 
 			// Connect.
-			socket.connect(host,port);
+			host = wshost;
+			if (use_ssl) {
+				ssl = use_ssl;
+				tlsconfig= new TLSConfig(TLSEngine.CLIENT,
+					null, null, null, null, null,
+					TLSSecurityParameters.PROTOCOL_VERSION);
+				tlsconfig.trustAllCertificates = true;
+				tlsconfig.ignoreCommonNameMismatch = true;
+				tlssocket = new TLSSocket();
+				tlssocket.addEventListener("socketData",onSocketData);
+                                socket = tlssocket;
+			} else {
+				rawsocket.addEventListener("socketData",onSocketData);
+				socket = rawsocket;
+			}
+			rawsocket.connect(wshost,wsport);
 		}
 
 		public function close():void {
