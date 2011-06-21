@@ -1059,9 +1059,9 @@ DecafMUD.prototype.loadScript = function(filename, path) {
 		if ( this.options.jslocation !== undefined ) { path = this.options.jslocation; }
 		if ( path === undefined || typeof path === 'string' && path.length === 0 ) {
 			// Attempt to discover the path.
-			var obj = document.querySelector('script[src$="decafmud.js"]');
+			var obj = document.querySelector('script[src*="decafmud.js"]');
 			if ( obj === null ) {
-				obj = document.querySelector('script[src$="decafmud.min.js"]'); }
+				obj = document.querySelector('script[src*="decafmud.min.js"]'); }
 			if ( obj !== null ) {
 				path = obj.src.substr(0,obj.src.lastIndexOf('/')+1); }
 		}
