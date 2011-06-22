@@ -90,12 +90,10 @@ FlashSocket.prototype.setup = function(count) {
 		this.ssl = ssl;
 	}
 
-	this.doEmbed();
+	this.doEmbed(function(e) { sock.onSocket(e) });
 }
 
-FlashSocket.prototype.doEmbed = function() {
-	var sock = this;
-
+FlashSocket.prototype.doEmbed = function(callback) {
 	// Get the target
 	var swflocation = this.decaf.options.set_socket.swf;
 	
@@ -114,7 +112,7 @@ FlashSocket.prototype.doEmbed = function() {
 		flashvars,				// Flash Variables
 		{'menu' : 'false' },			// Parameters
 		{},					// Attributes
-		function(e) { sock.onSocket(e) }	// Callback Function
+		callback				// Callback Function
 	);
 }
 
@@ -220,10 +218,18 @@ FlashSocket.executeCallback = function(id, type, data, data2) {
 	else if ( type === 2 ) {
 		// Closed
 		sock.connected = false;
-		sock.decaf.socketClosed(sock);
-		sock.decaf.options.autoconnect = false;
-		sock.decaf.timer = setTimeout(function() { sock.noSocket(); }, 2500);
-		sock.doEmbed(); }
+		if ( sock.ssl ) {
+			sock.decaf.timer = setTimeout(function() {
+				sock.noSocket();
+			}, 2500);
+			sock.decaf.options.autoconnect = false;
+			sock.doEmbed(function(e) {
+				sock.onSocket(e);
+				sock.decaf.socketClosed(sock);
+			});
+		} else {
+			sock.decaf.socketClosed(sock);
+		} }
 	
 	else if ( type === 3 ) {
 		// Error
