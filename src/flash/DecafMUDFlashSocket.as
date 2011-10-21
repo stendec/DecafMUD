@@ -58,6 +58,11 @@ package {
 
 			// Get our object's ID.
 			var url:String = root.loaderInfo.url;
+			var params:Object = root.loaderInfo.parameters;
+			if( params["ssl"] != null ) {
+				ssl = true;
+			}
+
 			id = url.substr(url.lastIndexOf("?") + 1);
 
 			// Set the callback.
@@ -67,10 +72,22 @@ package {
 			rawsocket = new Socket  ;
 
 			// Add event listeners to the socket
-			rawsocket.addEventListener("close",onClose);
 			rawsocket.addEventListener("connect",onConnect);
-			rawsocket.addEventListener("ioError",onError);
-			rawsocket.addEventListener("securityError",onSecurityError);
+			if (ssl) {
+				tlsconfig= new TLSConfig(TLSEngine.CLIENT,
+					null, null, null, null, null,
+					TLSSecurityParameters.PROTOCOL_VERSION);
+				tlsconfig.trustAllCertificates = true;
+				tlsconfig.ignoreCommonNameMismatch = true;
+				tlssocket = new TLSSocket();
+                                socket = tlssocket;
+			} else {
+				socket = rawsocket;
+			}
+			socket.addEventListener("socketData",onSocketData);
+			socket.addEventListener("close",onClose);
+			socket.addEventListener("ioError",onError);
+			socket.addEventListener("securityError",onSecurityError);
 
 			// Set the default pport
 			pport = 843;
@@ -293,29 +310,15 @@ package {
 			allow_compress = allow;
 		}
 
-		public function connect(wshost:String,wsport:int,use_ssl:Boolean):void {
+		public function connect(c_host:String,c_port:int):void {
 			// First, load the policy file.
 			if (pport!=843) {
-				Security.loadPolicyFile("xmlsocket://"+wshost+":"+pport);
+				Security.loadPolicyFile("xmlsocket://"+c_host+":"+pport);
 			}
 
 			// Connect.
-			host = wshost;
-			if (use_ssl) {
-				ssl = use_ssl;
-				tlsconfig= new TLSConfig(TLSEngine.CLIENT,
-					null, null, null, null, null,
-					TLSSecurityParameters.PROTOCOL_VERSION);
-				tlsconfig.trustAllCertificates = true;
-				tlsconfig.ignoreCommonNameMismatch = true;
-				tlssocket = new TLSSocket();
-				tlssocket.addEventListener("socketData",onSocketData);
-                                socket = tlssocket;
-			} else {
-				rawsocket.addEventListener("socketData",onSocketData);
-				socket = rawsocket;
-			}
-			rawsocket.connect(wshost,wsport);
+			host = c_host;
+			rawsocket.connect(c_host,c_port);
 		}
 
 		public function close():void {

@@ -68,9 +68,6 @@ FlashSocket.prototype.setup = function(count) {
 		}
 	}
 	
-	// Get the target
-	var swflocation = this.decaf.options.set_socket.swf;
-	
 	// Set a timer to display an error if we fail creating the socket.
 	this.decaf.timer = setTimeout(function() { sock.noSocket(); }, 2500);
 	
@@ -83,18 +80,39 @@ FlashSocket.prototype.setup = function(count) {
 	div.style.cssText = 'display:none;position:absolute;width:0;height:0;left:-9000px;overflow:hidden!important;margin:0!important;padding:0!important;';
 	div.id = this.id;
 	document.body.insertBefore(div,document.body.firstChild); //appendChild(div);
+
+	// Configure SSL
+	var ssl = this.ssl;
+	if ( ssl === undefined ) {
+		ssl = this.decaf.options.set_socket.ssl;
+		if ( ssl === undefined) {
+			ssl = false; }
+		this.ssl = ssl;
+	}
+
+	this.doEmbed(function(e) { sock.onSocket(e) });
+}
+
+FlashSocket.prototype.doEmbed = function(callback) {
+	// Get the target
+	var swflocation = this.decaf.options.set_socket.swf;
 	
+	var flashvars = {};
+	if( this.ssl ) {
+		flashvars['ssl'] = 'true';
+	}
+
 	// Finally, attempt socket creation.
 	swfobject.embedSWF(
 		swflocation + '?' + this.id,		// Source File
-		this.id,							// ID
-		'0', '0',							// Width x Height
-		'9.0.0',							// Min. Version
-		false,								// Express Install URL
-		{},									// Flash Variables
-		{'menu' : 'false' },				// Parameters
-		{},									// Attributes
-		function(e) { sock.onSocket(e) }	// Callback Function
+		this.id,				// ID
+		'0', '0',				// Width x Height
+		'9.0.0',				// Min. Version
+		false,					// Express Install URL
+		flashvars,				// Flash Variables
+		{'menu' : 'false' },			// Parameters
+		{},					// Attributes
+		callback				// Callback Function
 	);
 }
 
@@ -142,7 +160,7 @@ FlashSocket.prototype.connect = function() {
 		this.socket.setPolicyPort(this.decaf.options.set_socket.policyport); }
 	
 	// Get the hostname, port and ssl options
-	var host = this.host, port = this.port, ssl = this.ssl;
+	var host = this.host, port = this.port;
 	if ( host === undefined ) {
 		host = this.decaf.options.host;
 		if ( ! host ) { host = document.location.host; }
@@ -151,15 +169,9 @@ FlashSocket.prototype.connect = function() {
 	if ( port === undefined ) {
 		port = this.decaf.options.port;
 		this.port = port; }
-	if ( ssl === undefined ) {
-		ssl = this.decaf.options.set_socket.ssl;
-		if ( ssl === undefined) {
-			ssl = false; }
-		this.ssl = ssl;
-	}
 	
 	// Attempt to connect.
-	this.socket.connect(host, port, ssl);
+	this.socket.connect(host, port);
 }
 
 // Close the current connection.
@@ -206,7 +218,18 @@ FlashSocket.executeCallback = function(id, type, data, data2) {
 	else if ( type === 2 ) {
 		// Closed
 		sock.connected = false;
-		sock.decaf.socketClosed(sock); }
+		if ( sock.ssl ) {
+			sock.decaf.timer = setTimeout(function() {
+				sock.noSocket();
+			}, 2500);
+			sock.decaf.options.autoconnect = false;
+			sock.doEmbed(function(e) {
+				sock.onSocket(e);
+				sock.decaf.socketClosed(sock);
+			});
+		} else {
+			sock.decaf.socketClosed(sock);
+		} }
 	
 	else if ( type === 3 ) {
 		// Error
