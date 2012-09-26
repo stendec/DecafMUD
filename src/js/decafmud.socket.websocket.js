@@ -1,6 +1,6 @@
 /*!
  * DecafMUD v0.9.0
- * http://decafmud.kicks-ass.net
+ * http://decafmud.stendec.me
  *
  * Copyright 2010, Stendec <stendec365@gmail.com>
  */

@@ -1,6 +1,6 @@
 /*!
  * DecafMUD v0.9.0
- * http://decafmud.kicks-ass.net
+ * http://decafmud.stendec.me
  *
  * Copyright 2010, Stendec <stendec365@gmail.com>
  */
@@ -965,7 +965,7 @@ if ( String.prototype.tr === undefined ) {
 /** Display a dialog with About information for DecafMUD. */
 DecafMUD.prototype.about = function() {
 	var abt = ["DecafMUD v{0} \u00A9 2010 Stendec"];
-	abt.push("http://decafmud.kicks-ass.net/\n");
+	abt.push("http://decafmud.stendec.me/\n");
 	
 	abt.push("DecafMUD is a web-based MUD client written in JavaScript, rather" +
 		" than a plugin like Flash or Java, making it load faster and react as" +
